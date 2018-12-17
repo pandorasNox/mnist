@@ -2,6 +2,15 @@
 include ./hack/help.mk
 
 PWD=$(shell pwd)
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+	OS="LINUX"
+	OPEN=x-www-browser
+endif
+ifeq ($(UNAME_S),Darwin)
+	OS="OSX"
+	OPEN=open
+endif
 
 .PHONY: up
 up: ##dev start docker env
@@ -27,4 +36,8 @@ serve: ##@dev start jupyter notebook server
 
 .PHONY: open
 open: ##@dev open jupyter notebook UI in browser
-	open http://localhost:63832
+	$(OPEN) http://localhost:63832
+
+.PHONY: os
+os:
+	@echo $(OS)
