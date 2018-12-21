@@ -13,3 +13,7 @@ docker run -d -t --rm --name pandorasnox_mnist -p 63832:8888 -v $(pwd):/workspac
 docker ps --filter "name=pandorasnox_mnist" | tail -n 1 | awk '{print $1}'
 
 ```
+
+`pip install flair`
+
+- pocket science lab

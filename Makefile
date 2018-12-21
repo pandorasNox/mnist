@@ -12,27 +12,32 @@ ifeq ($(UNAME_S),Darwin)
 	OPEN=open
 endif
 
+#IMAGE=pandorasnox/deepo:pytorch-py36-jupyter-cpu
+IMAGE=flair
+#CONTAINER_NAME=pandorasnox_mnist
+CONTAINER_NAME=zalando_flair
+
 .PHONY: up
 up: ##dev start docker env
-	docker run -d -t --rm --name pandorasnox_mnist -p 63832:8888 -v $(PWD):/workspace -w "/workspace" pandorasnox/deepo:pytorch-py36-jupyter-cpu 2> /dev/null || true
+	docker run -d -t --rm --name $(CONTAINER_NAME) -p 63832:8888 -v $(PWD):/workspace -w "/workspace" $(IMAGE) 2> /dev/null || true
 
 .PHONY: down
 down: ##dev stop docker env
-	docker stop pandorasnox_mnist
+	docker stop $(CONTAINER_NAME)
 
 .PHONY: status
 status: #dev return status of docker env
-	docker ps --filter "name=pandorasnox_mnist"
+	docker ps --filter "name=$(CONTAINER_NAME)"
 
 .PHONY: cli
 cli: ##@dev start dev cli
 	$(MAKE) up 2> /dev/null || true
-	docker exec -it pandorasnox_mnist bash
+	docker exec -it $(CONTAINER_NAME) bash
 
 .PHONY: serve
 serve: ##@dev start jupyter notebook server
 	$(MAKE) up 2> /dev/null || true
-	docker exec -it pandorasnox_mnist jupyter notebook --no-browser --ip=0.0.0.0 --allow-root --NotebookApp.token= --notebook-dir='/workspace'
+	docker exec -it $(CONTAINER_NAME) jupyter notebook --no-browser --ip=0.0.0.0 --allow-root --NotebookApp.token= --notebook-dir='/workspace'
 
 .PHONY: open
 open: ##@dev open jupyter notebook UI in browser
